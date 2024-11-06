@@ -1,0 +1,47 @@
+/* Estilo para la raíz de la aplicación */
+.root {
+    -fx-font-family: "Arial";
+    -fx-font-size: 14px;
+}
+
+/* Estilo para los botones */
+.button {
+    -fx-background-color: #4CAF50;
+    -fx-text-fill: white;
+    -fx-padding: 10px 15px;
+    -fx-border-radius: 4px;
+}
+
+.button:hover {
+    -fx-background-color: #45a049;
+}
+
+/* Estilo para las tablas */
+.table-view {
+    -fx-background-color: #f4f4f4;
+}
+
+.table-row-cell {
+    -fx-border-color: #ddd;
+}
+
+/* Estilo para los campos de texto */
+.text-field {
+    -fx-padding: 10px;
+    -fx-border-radius: 4px;
+    -fx-border-color: #ccc;
+}
+
+.text-field:focused {
+    -fx-border-color: #4CAF50;
+}
+/* Estilo para la TableView */
+.table-view {
+    -fx-border-color: transparent; /* Color del borde de la tabla */
+    -fx-background-color: white; /* Color de fondo de la tabla */
+    -fx-table-cell-border-color: #50C878; /* Color de borde de las celdas */
+    -fx-alternate-row-fill-visible: true; /* Alternar la visibilidad de filas alternadas */
+    -fx-control-inner-background: white; /* Fondo interior de la tabla */
+    -fx-control-inner-background-alt: rgba(144, 238, 144, 0.5); /* Verde claro con transparencia */
+}
+

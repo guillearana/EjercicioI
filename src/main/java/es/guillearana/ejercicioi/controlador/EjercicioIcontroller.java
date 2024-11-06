@@ -22,8 +22,6 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.collections.transformation.FilteredList;
 import javafx.collections.transformation.SortedList;
-import javafx.scene.control.Button;
-import javafx.scene.control.Tooltip;
 
 /**
  * Controlador para la gestión de la vista principal de la aplicación de personas.
@@ -64,16 +62,13 @@ public class EjercicioIcontroller {
     @FXML
     private TextField txtNombre;
 
+    /** Imagen de icono utilizada en la interfaz. */
     @FXML
     private ImageView imgIcon;
 
+    /** Botón para cambiar el idioma de la interfaz. */
     @FXML
-    private Button btnChangeLanguage; // Para referenciar el botón en el controlador
-
-    // Crear tooltips
-    Tooltip tooltipAgregar = new Tooltip("Agregar una nueva persona");
-    Tooltip tooltipModificar = new Tooltip("Modificar la persona seleccionada");
-    Tooltip tooltipEliminar = new Tooltip("Eliminar la persona seleccionada");
+    private Button btnChangeLanguage;
 
     /** Conexión a la base de datos. */
     private ConexionBD conexion = new ConexionBD();
@@ -99,38 +94,32 @@ public class EjercicioIcontroller {
      */
     @FXML
     void accionAgregar(ActionEvent event) throws ClassNotFoundException {
-        // Abre la ventana modal para ingresar los detalles de la nueva persona
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/es/guillearana/ejercicioi/ejerImodal.fxml"));
             Parent root = loader.load();
             ControllerModalEjerI controller = loader.getController();
 
-            // Configuración de la ventana modal
             Stage stage = new Stage();
             stage.initModality(Modality.APPLICATION_MODAL);
-            stage.setResizable(false); // La ventana no es redimensionable
+            stage.setResizable(false);
             stage.setTitle("Agregar Persona");
             stage.setScene(new Scene(root));
-            stage.showAndWait(); // Bloquea la ventana principal hasta que la modal se cierre
+            stage.showAndWait();
 
-            // Recuperamos la persona que hemos creado gracias al método getPersona situado
-            // en el controlador modal
             Persona nuevaPersona = controller.getPersona();
-
-            // Si la persona que recuperamos de la ventana modal no es null
             if (nuevaPersona != null) {
-                PersonaDao personaDao = new PersonaDao(); // Crear una instancia de PersonaDao
-                if (!personasData.contains(nuevaPersona)) { // Comprobamos que no exista ya
+                PersonaDao personaDao = new PersonaDao();
+                if (!personasData.contains(nuevaPersona)) {
                     try {
-                        personaDao.aniadirPersona(nuevaPersona); // Llamar al método para añadir la persona
+                        personaDao.aniadirPersona(nuevaPersona);
                         mostrarAlerta("Persona añadida con éxito.");
-                        personasData.add(nuevaPersona); // Añadir la persona a la lista
+                        personasData.add(nuevaPersona);
                     } catch (SQLException e) {
                         e.printStackTrace();
                         mostrarAlerta("Error al interactuar con la base de datos: " + e.getMessage());
                     }
                 } else {
-                    mostrarAlerta("La persona ya está en la tabla."); // Alerta si ya existe
+                    mostrarAlerta("La persona ya está en la tabla.");
                 }
             }
         } catch (IOException e) {
@@ -148,14 +137,13 @@ public class EjercicioIcontroller {
      */
     @FXML
     void accionEliminar(ActionEvent event) {
-        if (!personasData.isEmpty()) { // Asegúrate de que la lista no esté vacía.
-            Persona selected = tableInfo.getSelectionModel().getSelectedItem(); // Obtener la persona seleccionada
+        if (!personasData.isEmpty()) {
+            Persona selected = tableInfo.getSelectionModel().getSelectedItem();
             if (selected != null) {
                 try {
-                    PersonaDao personaDao = new PersonaDao(); // Crear una instancia de PersonaDao
-                    personaDao.eliminarPersona(selected); // Llama al método eliminar de PersonaDao.
-
-                    personasData.remove(selected); // Elimina de la lista local.
+                    PersonaDao personaDao = new PersonaDao();
+                    personaDao.eliminarPersona(selected);
+                    personasData.remove(selected);
                     mostrarAlerta("Persona eliminada con éxito");
                 } catch (SQLException e) {
                     e.printStackTrace();
@@ -184,7 +172,7 @@ public class EjercicioIcontroller {
                 FXMLLoader loader = new FXMLLoader(getClass().getResource("/es/guillearana/ejercicioi/ejerImodal.fxml"));
                 Parent root = loader.load();
                 ControllerModalEjerI controller = loader.getController();
-                controller.setPersona(personaSeleccionada); // Rellenar campos con los datos de la persona seleccionada
+                controller.setPersona(personaSeleccionada);
 
                 Stage stage = new Stage();
                 stage.initModality(Modality.APPLICATION_MODAL);
@@ -194,15 +182,13 @@ public class EjercicioIcontroller {
 
                 Persona personaModificada = controller.getPersona();
                 if (personaModificada != null) {
-                    // Usar PersonaDao para modificar la persona en la base de datos
                     PersonaDao personaDao = new PersonaDao();
-                    personaDao.modificarPersona(personaModificada); // Llamar al método modificar en PersonaDao
+                    personaDao.modificarPersona(personaModificada);
 
-                    // Actualizar la lista local si la modificación fue exitosa
                     personaSeleccionada.setNombre(personaModificada.getNombre());
                     personaSeleccionada.setApellidos(personaModificada.getApellidos());
                     personaSeleccionada.setEdad(personaModificada.getEdad());
-                    tableInfo.refresh(); // Refrescar la tabla para mostrar los cambios
+                    tableInfo.refresh();
                     mostrarAlerta("Persona modificada con éxito");
                 }
             } catch (IOException e) {
@@ -225,7 +211,6 @@ public class EjercicioIcontroller {
         Image image = new Image(getClass().getResourceAsStream("/es/guillearana/ejercicioi/imagenes/icono.png"));
         imgIcon.setImage(image);
 
-        // Asignar Tooltips a los botones y al campo de texto
         btnAgregar.setTooltip(new Tooltip("Agregar una nueva persona"));
         btnModificar.setTooltip(new Tooltip("Modificar la persona seleccionada"));
         btnEliminar.setTooltip(new Tooltip("Eliminar la persona seleccionada"));
@@ -235,22 +220,19 @@ public class EjercicioIcontroller {
         colApellidos.setCellValueFactory(new PropertyValueFactory<>("apellidos"));
         colEdad.setCellValueFactory(new PropertyValueFactory<>("edad"));
 
-        // Centrar el texto de la columna de edad
         colEdad.setCellFactory(col -> new TableCell<>() {
             @Override
             protected void updateItem(Integer item, boolean empty) {
                 super.updateItem(item, empty);
                 setText(empty ? null : Integer.toString(item));
-                setAlignment(Pos.CENTER_RIGHT); // Alineación a la derecha
+                setAlignment(Pos.CENTER_RIGHT);
             }
         });
 
-        // Cargar personas desde la base de datos
         PersonaDao personaDao = new PersonaDao();
         ObservableList<Persona> personasCargadas = personaDao.cargarPersonas();
         personasData.addAll(personasCargadas);
 
-        // Filtrado de la lista de personas por nombre
         FilteredList<Persona> filteredData = new FilteredList<>(personasData, p -> true);
         txtNombre.textProperty().addListener((observable, oldValue, newValue) -> {
             filteredData.setPredicate(persona -> {
@@ -262,52 +244,35 @@ public class EjercicioIcontroller {
             });
         });
 
-        // Vincular la tabla con la lista filtrada
         SortedList<Persona> sortedData = new SortedList<>(filteredData);
         sortedData.comparatorProperty().bind(tableInfo.comparatorProperty());
         tableInfo.setItems(sortedData);
 
-        // Crear el menú contextual con opciones de "Modificar" y "Eliminar"
         ContextMenu contextMenu = new ContextMenu();
-
         MenuItem modifyItem = new MenuItem("Modificar");
-        modifyItem.setOnAction(event -> {
+        modifyItem.setOnAction(e -> {
             try {
-                accionModificar(new ActionEvent());
-            } catch (ClassNotFoundException e) {
-                e.printStackTrace();
+                accionModificar(null);
+            } catch (ClassNotFoundException ex) {
+                ex.printStackTrace();
             }
         });
 
         MenuItem deleteItem = new MenuItem("Eliminar");
-        deleteItem.setOnAction(event -> accionEliminar(new ActionEvent()));
+        deleteItem.setOnAction(e -> accionEliminar(null));
 
         contextMenu.getItems().addAll(modifyItem, deleteItem);
-
-        // Asignar el menú contextual a cada fila de la tabla
-        tableInfo.setRowFactory(tv -> {
-            TableRow<Persona> row = new TableRow<>();
-            row.setOnContextMenuRequested(event -> {
-                if (!row.isEmpty()) {
-                    tableInfo.getSelectionModel().select(row.getItem()); // Seleccionar la fila
-                    contextMenu.show(row, event.getScreenX(), event.getScreenY());
-                }
-            });
-            return row;
-        });
+        tableInfo.setContextMenu(contextMenu);
     }
 
-
     /**
-     * Muestra un mensaje de alerta.
+     * Muestra una alerta con el mensaje proporcionado.
      *
      * @param mensaje el mensaje a mostrar en la alerta
      */
     private void mostrarAlerta(String mensaje) {
-        Alert alert = new Alert(Alert.AlertType.INFORMATION);
-        alert.setTitle("Información");
-        alert.setHeaderText(null);
-        alert.setContentText(mensaje);
-        alert.showAndWait();
+        Alert alerta = new Alert(Alert.AlertType.INFORMATION);
+        alerta.setContentText(mensaje);
+        alerta.show();
     }
 }
